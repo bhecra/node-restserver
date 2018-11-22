@@ -1,5 +1,8 @@
 require('./config/config');
+
 const express = require('express');
+const mongoose = require('mongoose');
+
 const app = express();
 
 const bodyParser = require('body-parser');
@@ -12,36 +15,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 
-app.get('/usuario', (req, res) => {
-    //res.send('Hola mundo'); //normal
-    res.json('get Usuario'); //json
-});
-app.post('/usuario', (req, res) => {
+app.use(require('./routes/index'));
 
-    let body = req.body;
 
-    if (body.nombre === undefined) {
-        res.status(400).json({
-            ok: false,
-            mensaje: "Se necesita el nombre"
-        });
-    } else {
+mongoose.connect(process.env.URLDB, (err, res) => {
+    if (err) throw err;
 
-        res.json({
-            body
-        }); //json
-    }
-});
+    console.log('Run database');
+})
 
-app.put('/usuario/:id', (req, res) => {
-    let id = req.params.id;
-    res.json({
-        id
-    }); //json
-});
-app.delete('/usuario', (req, res) => {
-    res.json('delete Usuario'); //json
-});
 
 app.listen(process.env.PORT, () => {
     console.log('Escuchando Puerto 3000');
